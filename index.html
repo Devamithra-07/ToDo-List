@@ -10,13 +10,13 @@
 /* ---------- BODY ---------- */
 body {
     font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: #ffffff; /* default light background for mobile */
+    color: #000000;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: 0.3s;
-    background-color: #cfc3c3; /* default white */
-    color: #000000;
 }
 
 /* ---------- CONTAINER ---------- */
@@ -27,6 +27,7 @@ body {
     background: rgba(255,255,255,0.9);
     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     backdrop-filter: blur(6px);
+    transition: 0.3s;
 }
 
 /* ---------- HEADER ---------- */
@@ -36,14 +37,10 @@ body {
     align-items: center;
 }
 
-h2 {
-    margin: 0;
-}
+h2 { margin: 0; }
 
 /* ---------- SETTINGS ---------- */
-.settings {
-    position: relative;
-}
+.settings { position: relative; }
 
 .gear-btn {
     background: transparent;
@@ -138,39 +135,43 @@ li.completed span {
 
 /* ---------- DARK MODE ---------- */
 body.dark {
-    background-color: #121212;
+    background-color: #121212; /* mobile fallback for dark theme */
     color: #ffffff;
 }
 
-
 body.dark .todo-container {
     background: rgba(97, 95, 95, 0.85);
-    color: white;
 }
 
-body.dark li {
-    background: #2a2a2a;
-}
-
+body.dark li { background: #2a2a2a; }
 body.dark input {
     background: #333;
     color: white;
     border: 1px solid #555;
 }
+body.dark .settings-panel { background: #2a2a2a; }
+body.dark .settings-panel button { background: #444; color: white; }
 
-body.dark .settings-panel {
-    background: #2a2a2a;
-}
+/* ---------- DESKTOP BACKGROUND IMAGES ---------- */
+@media screen and (min-width: 768px) {
+    body { 
+        background-image: url("light.jpg");
+        background-repeat: repeat;
+        background-size: 300px;
+        background-position: top left;
+    }
 
-body.dark .settings-panel button {
-    background: #444;
-    color: white;
+    body.dark {
+        background-image: url("dark.jpg");
+        background-repeat: repeat;
+        background-size: 300px;
+        background-position: top left;
+    }
 }
 </style>
 </head>
 
 <body>
-
 <div class="todo-container">
     <div class="header">
         <h2>📝 Todo List</h2>
@@ -227,7 +228,6 @@ function createTodo(text, completed) {
             <button class="delete-btn" onclick="deleteTodo(event)">Delete</button>
         </div>
     `;
-
     ul.append(li);
 }
 
@@ -305,13 +305,13 @@ document.addEventListener("click", e => {
         document.getElementById("settingsPanel").style.display = "none";
     }
 });
-if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker Registered"))
-        .catch(err => console.log("SW registration failed", err));
-    }
-</script>
 
+/* ---------- SERVICE WORKER ---------- */
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker Registered"))
+    .catch(err => console.log("SW registration failed", err));
+}
+</script>
 </body>
 </html>
-
