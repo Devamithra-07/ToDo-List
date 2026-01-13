@@ -1,148 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo List</title>
+<link rel="manifest" href="manifest.json">
 
-    <style>
-        body {
-            font-family:Georgia, 'Times New Roman', Times, serif;
-            background-image: url(images.jpg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<style>
+/* ---------- BODY ---------- */
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-image: url("light.jpg");
+    background-size:300px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+}
 
-        .todo-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 500px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
+/* ---------- CONTAINER ---------- */
+.todo-container {
+    width: 500px;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(6px);
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+/* ---------- HEADER ---------- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .input-area {
-            display: flex;
-            gap: 5px;
-        }
+h2 {
+    margin: 0;
+}
 
-        input {
-            flex: 1;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
+/* ---------- SETTINGS ---------- */
+.settings {
+    position: relative;
+}
 
-        button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+.gear-btn {
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+}
 
-        .add-btn {
-            background: #4CAF50;
-            color: white;
-        }
+.settings-panel {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 120px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
+.settings-panel button {
+    width: 100%;
+    margin-top: 5px;
+    cursor: pointer;
+}
 
-        li {
-            background: #f5f5f5;
-            margin-bottom: 8px;
-            padding: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 6px;
-        }
+/* ---------- INPUT ---------- */
+.input-area {
+    display: flex;
+    gap: 5px;
+    margin-top: 15px;
+}
 
-        li.completed span {
-            text-decoration: line-through;
-            color: gray;
-        }
+input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
 
-        .actions button {
-            margin-left: 5px;
-        }
+.add-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
 
-        .done-btn {
-            background: #2196F3;
-            color: white;
-        }
+/* ---------- LIST ---------- */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
 
-        .delete-btn {
-            background: #f44336;
-            color: white;
-        }
-    </style>
+li {
+    background: #f5f5f5;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li.completed span {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.actions button {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.done-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+
+/* ---------- DARK MODE ---------- */
+body.dark {
+    background-image: url("dark.jpg");
+    background-repeat: repeat;          
+    background-size:300px;
+    background-position: top left;
+}
+
+body.dark .todo-container {
+    background: rgba(97, 95, 95, 0.85);
+    color: white;
+}
+
+body.dark li {
+    background: #2a2a2a;
+}
+
+body.dark input {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+body.dark .settings-panel {
+    background: #2a2a2a;
+}
+
+body.dark .settings-panel button {
+    background: #444;
+    color: white;
+}
+</style>
 </head>
+
 <body>
-    
 
 <div class="todo-container">
-    <h2>📝 Todo List</h2>
+    <div class="header">
+        <h2>📝 Todo List</h2>
+
+        <div class="settings">
+            <button class="gear-btn" onclick="toggleSettings()">⚙️</button>
+            <div class="settings-panel" id="settingsPanel">
+                <strong>Theme</strong>
+                <button onclick="setTheme('light')">☀️ Light</button>
+                <button onclick="setTheme('dark')">🌙 Dark</button>
+            </div>
+        </div>
+    </div>
 
     <div class="input-area">
         <input id="inp" placeholder="Enter a task" onkeydown="handleEnter(event)">
-        <button class="add-btn" onclick="add()">Add</button>
+        <button class="add-btn" onclick="addTodo()">Add</button>
     </div>
 
     <ul id="ul_id"></ul>
 </div>
 
 <script>
-    var inp_text = document.getElementById("inp");
-    var ul_id = document.getElementById("ul_id");
+const inp = document.getElementById("inp");
+const ul = document.getElementById("ul_id");
 
-    function add() {
-        var inpText = inp_text.value.trim();
+/* ---------- LOAD ---------- */
+window.onload = function () {
+    loadTodos();
+    loadTheme();
+};
 
-        if (inpText === "") {
-            alert("Please enter a task!");
-            return;
-        }
+/* ---------- ADD TODO ---------- */
+function addTodo() {
+    const text = inp.value.trim();
+    if (text === "") return alert("Enter a task");
 
-        var li = document.createElement("li");
+    createTodo(text, false);
+    saveTodos();
+    inp.value = "";
+}
 
-        li.innerHTML = `
-            <span>${inpText}</span>
-            <div class="actions">
-                <button class="done-btn" onclick="markDone(event)">Done</button>
-                <button class="delete-btn" onclick="deleteFunc(event)">Delete</button>
-            </div>
-        `;
+/* ---------- CREATE TODO ---------- */
+function createTodo(text, completed) {
+    const li = document.createElement("li");
+    if (completed) li.classList.add("completed");
 
-        ul_id.append(li);
-        inp_text.value = "";
+    li.innerHTML = `
+        <span>${text}</span>
+        <div class="actions">
+            <button class="done-btn" onclick="toggleDone(event)">
+                ${completed ? "Undo" : "Done"}
+            </button>
+            <button class="delete-btn" onclick="deleteTodo(event)">Delete</button>
+        </div>
+    `;
+
+    ul.append(li);
+}
+
+/* ---------- DONE / UNDO ---------- */
+function toggleDone(event) {
+    const li = event.target.closest("li");
+    const btn = event.target;
+
+    if (li.classList.contains("completed")) {
+        li.classList.remove("completed");
+        btn.innerText = "Done";
+        ul.prepend(li);
+    } else {
+        li.classList.add("completed");
+        btn.innerText = "Undo";
+        ul.append(li);
     }
+    saveTodos();
+}
 
-    function deleteFunc(event) {
-        event.target.closest("li").remove();
+/* ---------- DELETE ---------- */
+function deleteTodo(event) {
+    event.target.closest("li").remove();
+    saveTodos();
+}
+
+/* ---------- ENTER KEY ---------- */
+function handleEnter(e) {
+    if (e.key === "Enter") addTodo();
+}
+
+/* ---------- STORAGE ---------- */
+function saveTodos() {
+    let todos = [];
+    document.querySelectorAll("li").forEach(li => {
+        todos.push({
+            text: li.querySelector("span").innerText,
+            completed: li.classList.contains("completed")
+        });
+    });
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function loadTodos() {
+    let data = localStorage.getItem("todos");
+    if (!data) return;
+    JSON.parse(data).forEach(todo => {
+        createTodo(todo.text, todo.completed);
+    });
+}
+
+/* ---------- SETTINGS ---------- */
+function toggleSettings() {
+    const panel = document.getElementById("settingsPanel");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+function setTheme(mode) {
+    if (mode === "dark") document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
+
+    localStorage.setItem("theme", mode);
+    document.getElementById("settingsPanel").style.display = "none";
+}
+
+function loadTheme() {
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
     }
+}
 
-    function markDone(event) {
-         const li = event.target.closest("li");
-         li.classList.add("completed");   // mark as done
-        ul_id.append(li);
+/* ---------- CLOSE SETTINGS ON OUTSIDE CLICK ---------- */
+document.addEventListener("click", e => {
+    if (!e.target.closest(".settings")) {
+        document.getElementById("settingsPanel").style.display = "none";
     }
-
-    function handleEnter(event) {
-        if (event.key === "Enter") {
-            add();
-        }
+});
+if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.log("SW registration failed", err));
     }
 </script>
 
