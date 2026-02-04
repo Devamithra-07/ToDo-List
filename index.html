@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Todo List</title>
-<link rel="manifest" href="manifest.json">
+<title>📜 ToDo-List</title>
+
 
 <style>
 /* ---------- BODY ---------- */
 body {
     font-family: Georgia, 'Times New Roman', Times, serif;
-    background-color: #ffffff; /* default light background for mobile */
-    color: #000000;
+    background-image:url("bg5.jpg");
+    background-size: cover;
+    color: #000;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -21,13 +22,12 @@ body {
 
 /* ---------- CONTAINER ---------- */
 .todo-container {
-    width: 500px;
+    width: 700px;
     padding: 20px;
+    padding-top:100px;
     border-radius: 12px;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-    transition: 0.3s;
+    
+    
 }
 
 /* ---------- HEADER ---------- */
@@ -37,16 +37,13 @@ body {
     align-items: center;
 }
 
-h2 { margin: 0; }
-
-/* ---------- SETTINGS ---------- */
 .settings { position: relative; }
 
 .gear-btn {
     background: transparent;
     font-size: 20px;
-    cursor: pointer;
     border: none;
+    cursor: pointer;
 }
 
 .settings-panel {
@@ -70,7 +67,7 @@ h2 { margin: 0; }
 /* ---------- INPUT ---------- */
 .input-area {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     margin-top: 15px;
 }
 
@@ -90,17 +87,51 @@ input {
     cursor: pointer;
 }
 
+/* ---------- CATEGORY DROPDOWN ---------- */
+.category-box {
+    display: none;
+    margin-top: 10px;
+    gap: 8px;
+}
+
+.category-box button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #ddd;
+}
+
+/* ---------- SECTIONS ---------- */
+.sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.section {
+    flex: 1 1 45%;
+    background: #dfdddf;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.completed-box {
+    background: #f2f2f2;
+}
+
 /* ---------- LIST ---------- */
 ul {
     list-style: none;
     padding: 0;
-    margin-top: 15px;
 }
 
 li {
-    background: #f5f5f5;
-    margin-bottom: 8px;
-    padding: 8px;
+    background: #fff;
+    margin-bottom: 6px;
+    padding: 6px;
     border-radius: 6px;
     display: flex;
     justify-content: space-between;
@@ -121,7 +152,7 @@ li.completed span {
     background: #2196F3;
     color: white;
     border: none;
-    padding: 5px 8px;
+    padding: 4px 7px;
     border-radius: 5px;
 }
 
@@ -129,21 +160,21 @@ li.completed span {
     background: #f44336;
     color: white;
     border: none;
-    padding: 5px 8px;
+    padding: 4px 7px;
     border-radius: 5px;
 }
 
 /* ---------- DARK MODE ---------- */
 body.dark {
-    background-color: #121212; /* mobile fallback for dark theme */
-    color: #ffffff;
+    background-image: url("bg2.jpg");
+    color: white;
 }
 
-body.dark .todo-container {
-    background: rgba(97, 95, 95, 0.85);
-}
 
-body.dark li { background: #2a2a2a; }
+
+body.dark .section { background: #353535; }
+body.dark .completed-box { background: #6a6b6a; }
+body.dark li { background: #333; }
 body.dark input {
     background: #333;
     color: white;
@@ -151,35 +182,17 @@ body.dark input {
 }
 body.dark .settings-panel { background: #2a2a2a; }
 body.dark .settings-panel button { background: #444; color: white; }
-
-/* ---------- DESKTOP BACKGROUND IMAGES ---------- */
-@media screen and (min-width: 768px) {
-    body { 
-        background-image: url("light.jpg");
-        background-repeat: repeat;
-        background-size: 300px;
-        background-position: top left;
-    }
-
-    body.dark {
-        background-image: url("dark.jpg");
-        background-repeat: repeat;
-        background-size: 300px;
-        background-position: top left;
-    }
-}
 </style>
 </head>
 
 <body>
 <div class="todo-container">
-    <div class="header">
-        <h2>📝 Todo List</h2>
 
+    <div class="header">
+        <h2>📋 Todo List</h2>
         <div class="settings">
             <button class="gear-btn" onclick="toggleSettings()">⚙️</button>
             <div class="settings-panel" id="settingsPanel">
-                <strong>Theme</strong>
                 <button onclick="setTheme('light')">☀️ Light</button>
                 <button onclick="setTheme('dark')">🌙 Dark</button>
             </div>
@@ -187,84 +200,123 @@ body.dark .settings-panel button { background: #444; color: white; }
     </div>
 
     <div class="input-area">
-        <input id="inp" placeholder="Enter a task" onkeydown="handleEnter(event)">
-        <button class="add-btn" onclick="addTodo()">Add</button>
+        <input id="inp" placeholder="Enter a task">
+        <button class="add-btn" onclick="toggleCategory()">✚</button>
     </div>
 
-    <ul id="ul_id"></ul>
+    <div class="category-box" id="categoryBox">
+        <button onclick="addTodo('study')">📚 Study</button>
+        <button onclick="addTodo('project')">🛠️ Project</button>
+        <button onclick="addTodo('reminder')">⏰ Reminder</button>
+    </div>
+
+    <div class="sections">
+        <div class="section">
+            <h3>📚 Study</h3>
+            <ul id="studyList"></ul>
+        </div>
+
+        <div class="section">
+            <h3>🛠️ Project</h3>
+            <ul id="projectList"></ul>
+        </div>
+
+        <div class="section">
+            <h3>⏰ Reminder</h3>
+            <ul id="reminderList"></ul>
+        </div>
+
+        <div class="section completed-box">
+            <h3>✅ Completed</h3>
+            <ul id="completedList"></ul>
+        </div>
+    </div>
 </div>
 
 <script>
 const inp = document.getElementById("inp");
-const ul = document.getElementById("ul_id");
+const categoryBox = document.getElementById("categoryBox");
 
-/* ---------- LOAD ---------- */
-window.onload = function () {
+const lists = {
+    study: document.getElementById("studyList"),
+    project: document.getElementById("projectList"),
+    reminder: document.getElementById("reminderList"),
+    completed: document.getElementById("completedList")
+};
+
+window.onload = () => {
     loadTodos();
     loadTheme();
 };
 
-/* ---------- ADD TODO ---------- */
-function addTodo() {
-    const text = inp.value.trim();
-    if (text === "") return alert("Enter a task");
-
-    createTodo(text, false);
-    saveTodos();
-    inp.value = "";
+/* ---------- CATEGORY ---------- */
+function toggleCategory() {
+    if (inp.value.trim() === "") {
+        alert("Enter a task");
+        return;
+    }
+    categoryBox.style.display =
+        categoryBox.style.display === "flex" ? "none" : "flex";
 }
 
-/* ---------- CREATE TODO ---------- */
-function createTodo(text, completed) {
+/* ---------- ADD ---------- */
+function addTodo(category) {
+    createTodo(inp.value, category, false);
+    inp.value = "";
+    categoryBox.style.display = "none";
+    saveTodos();
+}
+
+/* ---------- CREATE ---------- */
+function createTodo(text, category, completed) {
     const li = document.createElement("li");
+    li.dataset.category = category;
+
     if (completed) li.classList.add("completed");
 
     li.innerHTML = `
         <span>${text}</span>
         <div class="actions">
             <button class="done-btn" onclick="toggleDone(event)">
-                ${completed ? "Undo" : "Done"}
+                ${completed ? "↩" : "✔"}
             </button>
-            <button class="delete-btn" onclick="deleteTodo(event)">Delete</button>
+            <button class="delete-btn" onclick="deleteTodo(event)">✖</button>
         </div>
     `;
-    ul.append(li);
+
+    completed ? lists.completed.append(li) : lists[category].append(li);
 }
 
 /* ---------- DONE / UNDO ---------- */
-function toggleDone(event) {
-    const li = event.target.closest("li");
-    const btn = event.target;
+function toggleDone(e) {
+    const li = e.target.closest("li");
+    const btn = e.target;
 
     if (li.classList.contains("completed")) {
         li.classList.remove("completed");
-        btn.innerText = "Done";
-        ul.prepend(li);
+        btn.innerText = "✔";
+        lists[li.dataset.category].append(li);
     } else {
         li.classList.add("completed");
-        btn.innerText = "Undo";
-        ul.append(li);
+        btn.innerText = "↩";
+        lists.completed.append(li);
     }
     saveTodos();
 }
 
 /* ---------- DELETE ---------- */
-function deleteTodo(event) {
-    event.target.closest("li").remove();
+function deleteTodo(e) {
+    e.target.closest("li").remove();
     saveTodos();
-}
-
-/* ---------- ENTER KEY ---------- */
-function handleEnter(e) {
-    if (e.key === "Enter") addTodo();
 }
 
 /* ---------- STORAGE ---------- */
 function saveTodos() {
-    let todos = [];
+    const todos = [];
     document.querySelectorAll("li").forEach(li => {
         todos.push({
             text: li.querySelector("span").innerText,
+            category: li.dataset.category,
             completed: li.classList.contains("completed")
         });
     });
@@ -272,25 +324,22 @@ function saveTodos() {
 }
 
 function loadTodos() {
-    let data = localStorage.getItem("todos");
+    const data = localStorage.getItem("todos");
     if (!data) return;
-    JSON.parse(data).forEach(todo => {
-        createTodo(todo.text, todo.completed);
-    });
+    JSON.parse(data).forEach(t =>
+        createTodo(t.text, t.category, t.completed)
+    );
 }
 
-/* ---------- SETTINGS ---------- */
+/* ---------- THEME ---------- */
 function toggleSettings() {
     const panel = document.getElementById("settingsPanel");
     panel.style.display = panel.style.display === "block" ? "none" : "block";
 }
 
 function setTheme(mode) {
-    if (mode === "dark") document.body.classList.add("dark");
-    else document.body.classList.remove("dark");
-
+    document.body.classList.toggle("dark", mode === "dark");
     localStorage.setItem("theme", mode);
-    document.getElementById("settingsPanel").style.display = "none";
 }
 
 function loadTheme() {
@@ -299,19 +348,7 @@ function loadTheme() {
     }
 }
 
-/* ---------- CLOSE SETTINGS ON OUTSIDE CLICK ---------- */
-document.addEventListener("click", e => {
-    if (!e.target.closest(".settings")) {
-        document.getElementById("settingsPanel").style.display = "none";
-    }
-});
 
-/* ---------- SERVICE WORKER ---------- */
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker Registered"))
-    .catch(err => console.log("SW registration failed", err));
-}
 </script>
 </body>
 </html>
